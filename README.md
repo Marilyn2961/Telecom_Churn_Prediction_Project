@@ -27,61 +27,99 @@ This project aims to support SyriaTel’s retention strategy by answering:
 - **Source**: [SyriaTel Telecom Churn Dataset (Kaggle)](https://www.kaggle.com/datasets/becksddf/churn-in-telecoms-dataset)
 
 
-## Data Preparation
+##  Data Cleaning & Preprocessing
 
-- Dropped uninformative or redundant columns:
-  - `phone_number`, `state`, `area_code`, `charge_bin`, `number_vmail_messages`
-- Encoded categorical variables:
-  - `international_plan`, `voice_mail_plan`, and `churn` mapped to 1/0
-- Cleaned column names for consistency
+- Removed unnecessary columns like `phone number`, `area code` and `state`
+- Converted categorical variables that is `international plan`, `voice mail plan` to numeric
+- Checked and confirmed absence of null values
+- Created dummy variables for categorical features
 
 
 ##  Exploratory Data Analysis (EDA)
 
-### Univariate Analysis:
-- High churn rate among users **without voicemail** and **with international plans**
-- Numerical features like **total_day_minutes** and **total_day_charge** show high variability and impact
+EDA was conducted to understand distributions, spot imbalances, and detect patterns:
 
-### Bivariate Analysis:
-- **Total charges vs. churn**: higher charges are associated with churn
-- **Customer service calls**: churn increases significantly for customers with >3 calls
+- **Target Variable**: Dataset is moderately imbalanced, with ~85.5% non-churned and ~14.5% churned customers.
+- **Categorical Features**: Strong relationship found between churn and features like:
+  - **International plan**: Users with international plans had significantly higher churn rates.
+  - **Customer service calls**: More calls often correlated with dissatisfaction.
+- **Numerical Features**:
+  - High day charge and long day minutes were associated with increased churn risk.
+  - Visualizations (e.g., histograms and boxplots) revealed useful churn signals.
+- **Correlation Heatmap**: Identified multicollinearity between features such as `total_day_minutes` and `total_day_charge`.
+
+##  Feature Engineering
+
+- **Multicollinearity Check**:  
+  - Applied **Variance Inflation Factor (VIF)** to drop highly correlated features for example dropped `total_day_charge` in favor of `total_day_minutes`.
+- **Class Imbalance Handling**:
+  - Applied **SMOTE (Synthetic Minority Over-sampling Technique)** to balance the target variable.
+- **Encoding**:
+  - Label encoding was used for binary categorical features that is churn.
+
 
 **Tableau Dashboard**:  
 View interactive visual insights here:  
 [Tableau Dashboard](https://public.tableau.com/app/profile/marilyn.akinyi/viz/SyriatelTelcomChurnPredictionProject/Dashboard1?publish=yes)
 
 
-## Data Preparation for Modeling
+##  Modelling
+The following models were trained and evaluated:
 
-### Multicollinearity Handling:
-- Applied **Variance Inflation Factor (VIF)** to detect multicollinearity
-- Dropped 7 correlated features including `total_day_charge`, `total_charge`
-
-### Class Imbalance Fix:
-- Original churn rate was ~14.5%
-- Used **SMOTE** to balance the training set (50/50 churn vs. no churn)
-
-
-##  Model Development
-
-We tested multiple models, including:
-
-- Logistic Regression  
-- Random Forest  
-- **Decision Tree Classifier**  *(Final Model)*
-
-The Decision Tree was chosen for its:
-
-- Interpretability
-- Competitive accuracy and recall
-- Business-friendliness
+| Model                 | Accuracy | Recall | Precision | ROC AUC |
+|----------------------|----------|--------|-----------|---------|
+| Logistic Regression  | 0.681    | 0.680  | 0.266     | 0.768   |
+| Decision Tree        | 0.882    | 0.732  | 0.573     | 0.837   |
+| Tuned Decision Tree  | 0.873    | 0.680  | 0.550     | 0.821   |
+| Random Forest        | 0.882    | 0.608  | 0.590     | 0.860   |
+| Tuned Random Forest  | 0.894    | 0.660  | 0.627     | 0.877   |
 
 
-##  Model Evaluation
+## Final Model: Decision Tree with Threshold Optimization
+While Random Forest slightly outperformed in AUC, the Decision Tree model was selected for its:
+- High recall (important for identifying churners),
+- Competitive performance,
+- Interpretability.
 
-- **Recall**: 75.3% — Model correctly identifies 3 out of 4 actual churners
-- **Precision**: Balanced to avoid false positives
-- **F1-Score**: Strong performance across both classes
+### Threshold Optimization Results:
+- **Optimal Threshold**: `0.421`
+- **Default Recall**: `0.732`
+- **Improved Recall**: `0.753`
+- **Improved F1 Score**: `0.655`
+
+**Confusion Matrix (Optimized Threshold):**
+[[517 53]
+[ 24 73]]
+
+
+**Classification Report (Optimized Threshold):**
+
+          precision    recall  f1-score   support
+       0       0.96      0.91      0.93       570
+       1       0.58      0.75      0.65        97
+
+
+##  Financial Impact Estimation
+
+- **Annual Revenue at Risk**: \$59,243.04
+- **False Positive Costs**: \$2,650.00
+- **Missed Churn Revenue**: \$19,056.84
+- **Recall Rate After Threshold Tuning**: **75.3%**
+
+
+## Key Visualizations
+1. **Target Variable Distribution**  
+   ![Churn Distribution](Images\Target Variable Distribution.png)
+   - Shows the imbalance in churn vs non-churn customers.
+
+2. **Top 10 Features Most Correlated with Churn**  
+   ![Correlation Heatmap](Images\Top 10 Correlated features with Churn.png)
+   - Highlights which variables have strongest relationships with churn (e.g., total charges, tenure).
+
+3. **Top 10 Feature Importances from the Decision Tree**  
+   ![Feature Importance](Images\Feature importance from Decison Tree.png)
+   - Demonstrates which features had the most predictive power in the Decision Tree model.
+
 
 
 ##  Recommendations
