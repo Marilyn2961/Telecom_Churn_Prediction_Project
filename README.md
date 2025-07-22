@@ -109,15 +109,15 @@ While Random Forest slightly outperformed in AUC, the Decision Tree model was se
 
 ## Key Visualizations
 1. **Target Variable Distribution**  
-   ![Churn Distribution](Images\Target Variable Distribution.png)
+   ![Churn Distribution](https://github.com/Marilyn2961/Telecom_Churn_Prediction_Project/blob/master/Images/Target%20Variable%20Distribution.png)
    - Shows the imbalance in churn vs non-churn customers.
 
 2. **Top 10 Features Most Correlated with Churn**  
-   ![Correlation Heatmap](Images\Top 10 Correlated features with Churn.png)
-   - Highlights which variables have strongest relationships with churn (e.g., total charges, tenure).
+   ![Correlation Heatmap](https://github.com/Marilyn2961/Telecom_Churn_Prediction_Project/blob/master/Images/Top%2010%20Correlated%20features%20with%20Churn.png)
+   - Highlights which variables have strongest relationships with churn .
 
 3. **Top 10 Feature Importances from the Decision Tree**  
-   ![Feature Importance](Images\Feature importance from Decison Tree.png)
+   ![Feature Importance](https://github.com/Marilyn2961/Telecom_Churn_Prediction_Project/blob/master/Images/Feature%20importance%20from%20Decison%20Tree.png)
    - Demonstrates which features had the most predictive power in the Decision Tree model.
 
 
